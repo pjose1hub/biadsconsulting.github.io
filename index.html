@@ -6,225 +6,962 @@
   <title>BIADSConsulting.org</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
   <style>
-    body { font-family: 'Segoe UI', sans-serif; }
-    .hero {
-      background: linear-gradient(120deg, #0077b6, #00b4d8);
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #7209b7;
+      --gradient-start: #4cc9f0;
+      --gradient-end: #4361ee;
+      --neon-color: #00f7ff;
+      --neon-glow: 0 0 10px rgba(0, 247, 255, 0.7), 0 0 20px rgba(0, 247, 255, 0.5), 0 0 30px rgba(0, 247, 255, 0.3);
+      --text-color: #2b2d42;
+      --light-color: #f8f9fa;
+    }
+    
+    body { 
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      color: var(--text-color);
+    }
+    
+    /* Animated Background Elements */
+    .shape {
+      position: absolute;
+      z-index: 0;
+      opacity: 0.6;
+    }
+    
+    .shape-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+      filter: blur(2px);
+    }
+    
+    .shape-square {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+      border-radius: 15px;
+      transform: rotate(45deg);
+    }
+    
+    .shape-star {
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid rgba(76, 201, 240, 0.3);
+      position: absolute;
+      transform: rotate(30deg);
+    }
+    
+    .shape-star:after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-top: 100px solid rgba(76, 201, 240, 0.3);
+      position: absolute;
+      top: 30px;
+      left: -50px;
+    }
+    
+    /* Navbar Styling */
+    .navbar {
+      background-color: rgba(20, 20, 40, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      background: linear-gradient(to right, var(--gradient-start), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
+    
+    /* Neon Button Effect */
+    .neon-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--neon-color);
+      background: rgba(0, 0, 0, 0.2);
+      border: 2px solid var(--neon-color);
+      border-radius: 30px;
+      /* box-shadow: var(--neon-glow); */
+      /* text-shadow: 0 0 5px var(--neon-color); */
+      transition: all 0.3s ease;
+      text-decoration: none;
+      margin: 0 10px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .neon-btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: var(--neon-color);
+      transition: all 0.3s ease;
+      opacity: 0.2;
+      z-index: -1;
+    }
+    
+    .neon-btn:hover {
       color: white;
-      padding: 80px 20px;
+      text-shadow: 0 0 10px white;
+      box-shadow: 0 0 15px var(--neon-color), 0 0 30px rgba(0, 247, 255, 0.5);
+      transform: translateY(-3px);
     }
-    .section-title {
-      font-weight: bold;
-      margin-top: 40px;
+    
+    .neon-btn:hover:before {
+      width: 100%;
+    }
+    
+    .neon-btn.active {
+      background: rgba(0, 247, 255, 0.2);
+      color: white;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      padding: 120px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcGF0dGVyblRyYW5zZm9ybT0icm90YXRlKDQ1KSI+PHJlY3QgaWQ9InBhdHRlcm4tYmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InRyYW5zcGFyZW50Ij48L3JlY3Q+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjE1Ij48L2NpcmNsZT48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjcGF0dGVybikiIGhlaWdodD0iMTAwJSIgd2lkdGg9IjEwMCUiPjwvcmVjdD48L3N2Zz4=');
+      opacity: 0.4;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 4rem;
       margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      letter-spacing: -1px;
     }
-    footer {
-      background-color: #f8f9fa;
-      padding: 20px;
-      text-align: center;
-      font-size: 0.9em;
+    
+    .hero .lead {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 30px;
     }
-    .carousel-item {
-      transition: transform 0.6s ease-in-out;
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 30px;
     }
-    .carousel-img {
-      height: 300px;
-      object-fit: cover;
+    
+    .typed-cursor {
+      font-size: 4rem;
+      color: var(--neon-color);
+      text-shadow: var(--neon-glow);
     }
-    .carousel-caption {
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 8px;
-      padding: 15px;
+    
+    /* Buttons */
+    .btn-custom {
+      padding: 14px 32px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      border: none;
+      letter-spacing: 0.5px;
     }
-    .card {
-      transition: transform 0.3s;
+    
+    .btn-custom::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      z-index: -1;
     }
-    .card:hover {
+    
+    .btn-custom:hover::before {
+      width: 100%;
+    }
+    
+    .btn-custom:hover {
       transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-    @media (max-width: 768px) {
-      .carousel-img {
-        height: 200px;
+    
+    .btn-primary-custom {
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      color: white;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn-light-custom {
+      background: white;
+      color: var(--primary-color);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Section Styling */
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      margin-bottom: 50px;
+      position: relative;
+      display: inline-block;
+      font-size: 2.5rem;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 0;
+      width: 100px;
+      height: 5px;
+      background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+      border-radius: 5px;
+    }
+    
+    .section-subtitle {
+      color: var(--accent-color);
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 1rem;
+    }
+    
+    /* Service Cards */
+    .service-card {
+      padding: 40px 30px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+      transition: all 0.4s ease;
+      z-index: -1;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    }
+    
+    .service-card:hover::before {
+      height: 100%;
+    }
+    
+    .service-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .service-card:hover .service-icon {
+      transform: scale(1.1) rotate(10deg);
+    }
+    
+    .service-card h4 {
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: var(--text-color);
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      padding: 100px 0;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcGF0dGVyblRyYW5zZm9ybT0icm90YXRlKDQ1KSI+PHJlY3QgaWQ9InBhdHRlcm4tYmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InRyYW5zcGFyZW50Ij48L3JlY3Q+PHBhdGggZD0iTTAgMjAgQyAwIDEwLCA1IDAsIDE1IDAgQyAyNSAwLCAyNSAxMCwgMjUgMjAgQyAyNSAzMCwgMjUgNDAsIDE1IDQwIEMgNSA0MCwgMCAzMCwgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1vcGFjaXR5PSIwLjEiPjwvcGF0aD48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjcGF0dGVybikiIGhlaWdodD0iMTAwJSIgd2lkdGg9IjEwMCUiPjwvcmVjdD48L3N2Zz4=');
+      opacity: 0.2;
+    }
+    
+    .stat-item {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 30px 20px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, var(--neon-color), #ffffff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+    }
+    
+    .stat-label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+    
+    /* Solutions Section */
+    .solutions-section {
+      padding: 120px 0;
+      background-color: #f8f9fa;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .solutions-section::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+      top: -150px;
+      right: -150px;
+      z-index: 0;
+    }
+    
+    .solutions-section::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+      bottom: -100px;
+      left: -100px;
+      z-index: 0;
+    }
+    
+    .solution-card {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 1;
+      background: white;
+      height: 100%;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    
+    .solution-card:hover {
+      transform: translateY(-20px) rotateX(5deg);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+    
+    .solution-img-container {
+      position: relative;
+      overflow: hidden;
+      height: 250px;
+    }
+    
+    .solution-img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      transition: all 0.8s ease;
+    }
+    
+    .solution-card:hover .solution-img {
+      transform: scale(1.1);
+    }
+    
+    .solution-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    
+    .solution-card:hover .solution-overlay {
+      opacity: 1;
+    }
+    
+    .solution-content {
+      padding: 30px;
+      position: relative;
+    }
+    
+    .solution-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      position: relative;
+      display: inline-block;
+    }
+    
+    .solution-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+      transition: all 0.3s ease;
+    }
+    
+    .solution-card:hover .solution-title::after {
+      width: 100%;
+    }
+    
+    /* Skeleton Loading Effect */
+    @keyframes skeleton-loading {
+      0% {
+        background-position: -200px 0;
       }
-      .carousel-caption {
-        padding: 10px;
-        font-size: 0.9em;
+      100% {
+        background-position: calc(200px + 100%) 0;
+      }
+    }
+    
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200px 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 4px;
+      height: 20px;
+      margin-bottom: 10px;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: #0f172a;
+      color: white;
+      padding: 80px 0 30px;
+    }
+    
+    .footer-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .footer-text {
+      opacity: 0.8;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    
+    .footer-links h5 {
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: white;
+      font-size: 1.3rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .footer-links h5::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--gradient-start);
+    }
+    
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-links li {
+      margin-bottom: 15px;
+    }
+    
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.05rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .footer-links a::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-start);
+      transition: all 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--gradient-start);
+      text-decoration: none;
+    }
+    
+    .footer-links a:hover::before {
+      width: 100%;
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 50px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .hero h1 {
+        font-size: 3.2rem;
+      }
+      
+      .hero .lead {
+        font-size: 1.4rem;
+      }
+      
+      .typed-cursor {
+        font-size: 3.2rem;
+      }
+      
+      .neon-btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        padding: 100px 0 80px;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero .lead {
+        font-size: 1.2rem;
+      }
+      
+      .typed-cursor {
+        font-size: 2.5rem;
+      }
+      
+      .stat-number {
+        font-size: 2.8rem;
+      }
+      
+      .service-card {
+        margin-bottom: 30px;
+      }
+      
+      .neon-btn {
+        font-size: 0.8rem;
+        padding: 7px 14px;
+        margin: 0 5px;
       }
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <!-- Animated Background Elements -->
+  <div class="shape shape-circle animate__animated animate__fadeIn" style="top: 20%; left: 10%;"></div>
+  <div class="shape shape-square animate__animated animate__fadeIn" style="top: 60%; right: 10%;"></div>
+  <div class="shape shape-circle animate__animated animate__fadeIn" style="bottom: 10%; left: 20%;"></div>
+  <div class="shape shape-star animate__animated animate__fadeIn" style="top: 40%; right: 25%;"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">BIADSConsulting.org</a>
-      <div>
-        <a href="index.html" class="me-3 text-dark text-decoration-none">Home</a>
-        <a href="contact.html" class="text-dark text-decoration-none">Contact Us</a>
+      <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">BIADSConsulting.org</a>
+      <div class="animate__animated animate__fadeInRight">
+        <a href="index.html" class="neon-btn active">Home</a>
+        <a href="contact.html" class="neon-btn">Contact Us</a>
       </div>
     </div>
   </nav>
 
-  <header class="hero text-center">
-    <div class="container">
-      <h1 class="display-5 fw-bold">Software Consulting</h1>
-      <p class="lead">Web Application, Mobile Applications & All Data Solutions</p>
-      <p>Creating simple and purpose-driven solutions that cherish human intelligence and encourage responsible use of AI.</p>
-      <a href="contact.html" class="btn btn-light btn-lg mt-3">Contact Us</a>
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container hero-content text-center">
+      <h1 class="animate__animated animate__fadeInUp"><span id="typed"></span></h1>
+      <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Web Applications, Mobile Solutions & Intelligent Data Systems</p>
+      <p class="animate__animated animate__fadeInUp animate__delay-2s">Creating simple and purpose-driven solutions that cherish human intelligence and encourage responsible use of AI.</p>
+      <div class="animate__animated animate__fadeInUp animate__delay-3s">
+        <a href="contact.html" class="btn btn-custom btn-light-custom me-3">Contact Us</a>
+      </div>
     </div>
   </header>
 
-  <div class="container my-5">
-    <h2 class="section-title text-center text-primary">What We Do</h2>
-    <div class="row text-center">
-      <div class="col-md-4 mb-4">
-        <i class="fas fa-code fa-2x mb-2 text-info"></i>
-        <h5>Web & Mobile Apps</h5>
-        <p>Custom solutions built for usability, scalability, and performance.</p>
+  <!-- Services Section -->
+  <section id="services" class="py-5">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <p class="section-subtitle" data-aos="fade-up">WHAT WE OFFER</p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="100">Our Services</h2>
       </div>
-      <div class="col-md-4 mb-4">
-        <i class="fas fa-database fa-2x mb-2 text-info"></i>
-        <h5>All Data Solutions</h5>
-        <p>Smart data pipelines, dashboards, AI integrations, and secure storage.</p>
-      </div>
-      <div class="col-md-4 mb-4">
-        <i class="fas fa-lightbulb fa-2x mb-2 text-info"></i>
-        <h5>Purpose-Oriented Tools</h5>
-        <p>Solutions that support learning, home maintenance, cost tracking, and event management.</p>
+      
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h4>Web & Mobile Apps</h4>
+            <p>Custom solutions built for usability, scalability, and performance with modern technologies and responsive design.</p>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <h4>Data Solutions</h4>
+            <p>Smart data pipelines, interactive dashboards, AI integrations, and secure storage solutions for your business needs.</p>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <h4>Purpose-Oriented Tools</h4>
+            <p>Solutions that support learning, home maintenance, cost tracking, and event management with intuitive interfaces.</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="container mt-5">
-    <h2 class="text-center text-primary mb-4">Our Web Solutions</h2>
-    <div id="solutionsCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
-        <button type="button" data-bs-target="#solutionsCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
-      </div>
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?learning" class="card-img-top carousel-img" alt="Learning">
-                <div class="card-body">
-                  <h5 class="card-title">Learning as Fun</h5>
-                  <p class="card-text">Gamified tools and intuitive apps that make learning enjoyable and effective.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Learning as Fun</h5>
-            <p>Gamified tools for effective learning</p>
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-6 mb-4 mb-md-0">
+          <div class="stat-item" data-aos="fade-up">
+            <div class="stat-number" id="stat1">0</div>
+            <div class="stat-label">Projects Completed</div>
           </div>
         </div>
-        <div class="carousel-item">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?house,tools" class="card-img-top carousel-img" alt="Home Maintenance">
-                <div class="card-body">
-                  <h5 class="card-title">Home Maintenance</h5>
-                  <p class="card-text">Solutions to track repairs, reminders, and smart home care features.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Home Maintenance</h5>
-            <p>Smart solutions for home care</p>
+        
+        <div class="col-md-3 col-6 mb-4 mb-md-0">
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-number" id="stat2">0</div>
+            <div class="stat-label">Happy Clients</div>
           </div>
         </div>
-        <div class="carousel-item">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?finance,food" class="card-img-top carousel-img" alt="Food & Cost Tracking">
-                <div class="card-body">
-                  <h5 class="card-title">Food & Cost</h5>
-                  <p class="card-text">Track groceries, meals, and manage budgets for a smarter lifestyle.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Food & Cost</h5>
-            <p>Manage budgets and track expenses</p>
+        
+        <div class="col-md-3 col-6">
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-number" id="stat3">0</div>
+            <div class="stat-label">Team Members</div>
           </div>
         </div>
-        <div class="carousel-item">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?event,community" class="card-img-top carousel-img" alt="Event Globe">
-                <div class="card-body">
-                  <h5 class="card-title">Event Globe</h5>
-                  <p class="card-text">Manage events, tasks, invites, and participation — all in one app.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Event Globe</h5>
-            <p>Streamlined event management</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?ai,brain" class="card-img-top carousel-img" alt="AI with Human Values">
-                <div class="card-body">
-                  <h5 class="card-title">AI with Human Values</h5>
-                  <p class="card-text">Purposeful AI tools that enhance — not replace — natural intelligence.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>AI with Human Values</h5>
-            <p>Ethical AI solutions</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <img src="https://source.unsplash.com/600x300/?training,technology" class="card-img-top carousel-img" alt="Training">
-                <div class="card-body">
-                  <h5 class="card-title">Training & Workshops</h5>
-                  <p class="card-text">Hands-on training in Cloud Computing, RDS, Talend, Django, and data engineering best practices.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Training & Workshops</h5>
-            <p>Expert-led technical training</p>
+        
+        <div class="col-md-3 col-6">
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-number" id="stat4">0</div>
+            <div class="stat-label">Years Experience</div>
           </div>
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#solutionsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#solutionsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
-  </div>
+  </section>
 
-  <footer class="text-center mt-5 p-3 bg-light">
-    © 2025 BIADSConsulting.org – All rights reserved.
+  <!-- Solutions Section -->
+   <!-- Solutions Section -->
+   <section class="solutions-section">
+    <div class="container">
+      <div class="text-center mb-5">
+        <p class="section-subtitle" data-aos="fade-up">OUR APPLICATIONS</p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="100">Featured Solutions</h2>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://storage.googleapis.com/mktdms_images_served/agl5_logo/EG4.png" class="solution-img w-100" alt="Event Globe">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">Event Globe</h4>
+              <p>Comprehensive event management platform for planning, organizing, and tracking events with integrated participant management.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up" data-aos-delay="100">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://img.icons8.com/?size=150&id=108349&format=png" class="solution-img w-100" alt="Green Team">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">Green Team</h4>
+              <p>Eco-friendly project management tool designed to help teams collaborate while tracking their environmental impact.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up" data-aos-delay="200">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://img.icons8.com/?size=150&id=CHZWi8OV63SN&format=png" class="solution-img w-100" alt="My Group">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">My Group</h4>
+              <p>Social networking platform for communities and interest groups with powerful organization and communication tools.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up" data-aos-delay="300">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://img.icons8.com/?size=150&id=wUqJRyU3Sxwa&format=png" class="solution-img w-100" alt="Drive">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">Drive</h4>
+              <p>Secure cloud storage solution with advanced file management, sharing capabilities, and seamless integration with other tools.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up" data-aos-delay="400">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://storage.googleapis.com/mktdms_images_served/EventGlobe/fandc_logo.png" class="solution-img w-100" alt="FAC Daily Activities">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">FAC Daily Activities</h4>
+              <p>Activity tracking and scheduling tool for organizations to plan, monitor, and optimize daily operations and tasks.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-5" data-aos="fade-up" data-aos-delay="500">
+          <div class="solution-card">
+            <div class="solution-img-container">
+              <img src="https://img.icons8.com/?size=150&id=mrNoLXFmvXDX&format=png" class="solution-img w-100" alt="AI Solutions">
+              <div class="solution-overlay"></div>
+            </div>
+            <div class="solution-content">
+              <h4 class="solution-title">AI Solutions</h4>
+              <p>Ethical AI tools and integrations that enhance human capabilities while maintaining focus on responsible technology use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <div class="footer-logo">BIADSConsulting.org</div>
+          <p class="footer-text">Creating purpose-driven software solutions that enhance human capabilities and promote responsible technology use.</p>
+        </div>
+        
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <div class="footer-links">
+            <h5>Links</h5>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+          <div class="footer-links">
+            <h5>Services</h5>
+            <ul>
+              <li><a href="#">Web Applications</a></li>
+              <li><a href="#">Mobile Solutions</a></li>
+              <li><a href="#">Data Systems</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-4">
+          <div class="footer-links">
+            <h5>Contact</h5>
+            <ul>
+              <li><i class="fas fa-envelope me-2"></i> info@biadsconsulting.org</li>
+              <li><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        © 2025 BIADSConsulting.org – All rights reserved.
+      </div>
+    </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/countup.js@2.0.8/dist/countUp.min.js"></script>
+  
+  <script>
+    // Initialize AOS animations
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+    
+    // Typing animation
+    document.addEventListener('DOMContentLoaded', function() {
+      var typed = new Typed('#typed', {
+        strings: ['Software Consulting', 'Web Development', 'Mobile Solutions', 'Data Intelligence'],
+        typeSpeed: 80,
+        backSpeed: 40,
+        backDelay: 1500,
+        startDelay: 500,
+        loop: true
+      });
+      
+      // Counter animation
+      const countUpOptions = {
+        duration: 2.5,
+        useEasing: true,
+        useGrouping: true
+      };
+      
+      // Create CountUp instances
+      const stat1 = new CountUp('stat1', 150, countUpOptions);
+      const stat2 = new CountUp('stat2', 85, countUpOptions);
+      const stat3 = new CountUp('stat3', 25, countUpOptions);
+      const stat4 = new CountUp('stat4', 10, countUpOptions);
+      
+      // Start counting when scrolled into view
+      const statsSection = document.querySelector('.stats-section');
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          stat1.start();
+          stat2.start();
+          stat3.start();
+          stat4.start();
+          observer.unobserve(statsSection);
+        }
+      }, { threshold: 0.5 });
+      
+      observer.observe(statsSection);
+    });
+  </script>
 </body>
 </html>
